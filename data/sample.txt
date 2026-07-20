@@ -1,0 +1,24 @@
+Scope Infotech: Company Overview
+
+Scope Infotech (also known as Scope) is a federal contractor that delivers
+IT services and solutions to U.S. federal civilian agencies. Scope works
+under contract vehicles including GSA MAS, CIO-SP3 and CIO-SP4, OASIS+, and
+the 8(a) STARS III GWAC.
+
+Corporate Processes
+Scope's internal corporate processes are aligned with CMMI Level 3,
+ISO 9001:2015 (quality management), and ISO 27001:2022 (information security
+management).
+
+Customer-Facing Work
+Customer-facing work at Scope is unclassified. It is aligned with FISMA,
+the CMS Acceptable Risk Safeguards (ARS), HIPAA, NIST SP 800-53 at the
+FIPS 199 MODERATE baseline, and NIST SP 800-171.
+
+Development Approach
+Scope's customer-facing development processes follow the Scaled Agile
+Framework (SAFe).
+
+Accessibility
+Documents, code, and user interfaces intended for customer use follow
+Section 508 and WCAG 2.1 AA guidelines.
