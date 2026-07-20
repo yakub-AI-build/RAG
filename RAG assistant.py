@@ -85,3 +85,6 @@ if os.path.exists(DB_DIR):
     results = retriever.invoke("What are the features of CarUp?")
     for i, doc in enumerate(results, 1):
         print(f"\n--- Result {i} ---\n{doc.page_content}")
+
+
+        

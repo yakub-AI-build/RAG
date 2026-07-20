@@ -1,19 +1,37 @@
-# Sample RAG Project (LangChain + Claude)
+# RAG Assistant (LangChain + Groq + Chroma)
 
-A minimal Retrieval-Augmented Generation (RAG) example. It indexes local
-documents into a vector store, then answers questions using only the retrieved
+A Retrieval-Augmented Generation (RAG) assistant that indexes local markdown
+notebooks into a vector store and answers questions using only the retrieved
 content.
+
+## Stack
+
+| Role | Component |
+| --- | --- |
+| Orchestration | LangChain |
+| LLM (generation) | Groq — `llama-3.1-8b-instant` |
+| Embeddings | OpenAI (`OpenAIEmbeddings`) |
+| Vector store | Chroma (persisted locally to `db/`) |
+| UI (planned) | Gradio |
+
+You need two API keys: one for **Groq** (generation) and one for **OpenAI**
+(embeddings).
 
 ## How it works
 
-1. **`ingest.py`** — loads files from `data/`, splits them into chunks, embeds
-   them with a local `sentence-transformers` model, and stores them in a local
-   Chroma database (`chroma_db/`).
-2. **`query.py`** — embeds your question, retrieves the most relevant chunks,
-   and asks Claude to answer from that context.
+`RAG assistant.py` is the main script. It:
 
-Embeddings run locally (no API cost). Only the final answer step calls the
-Anthropic API.
+1. Loads every `.md` file under `notebooks/`.
+2. Splits them into overlapping chunks (1000 chars, 200 overlap), preferring
+   markdown header boundaries.
+3. Embeds the chunks with OpenAI embeddings and stores them in a local Chroma
+   database (`db/`).
+4. Retrieves the most relevant chunks for a question and passes them to the
+   Groq LLM to answer.
+
+> **Status:** work in progress. The Gradio dependency is included for an
+> upcoming chat UI, but the current script runs an indexing + sample-retrieval
+> pass from the command line.
 
 ## Setup
 
@@ -22,33 +40,38 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-cp .env.example .env      # then add your ANTHROPIC_API_KEY
+cp .env.example .env      # then add your GROQ_API_KEY and OPENAI_API_KEY
 ```
+
+`.env` is git-ignored, so your keys are never committed.
 
 ## Usage
 
 ```bash
-# 1. Build the index (re-run whenever documents change)
-python ingest.py
-
-# 2. Ask a question
-python query.py "What contract vehicles does Scope use?"
-
-# ...or run it interactively
-python query.py
+python "RAG assistant.py"
 ```
 
 ## Adding your own documents
 
-Drop `.txt` or `.pdf` files into `data/` and re-run `python ingest.py`.
+Drop `.md` files into `notebooks/` and re-run the script to rebuild the index.
 
 ## Project layout
 
 ```
 .
-├── data/            # source documents (sample.txt included)
-├── ingest.py        # build the vector store
-├── query.py         # retrieve + answer
+├── RAG assistant.py   # main app: ingest notebooks + retrieve + answer
+├── notebooks/         # source markdown documents to index
+├── data/              # sample data
+├── db/                # persisted Chroma vector store (git-ignored, generated)
 ├── requirements.txt
-└── .env.example
+├── .env.example       # template for GROQ_API_KEY and OPENAI_API_KEY
+├── ingest.py          # legacy scaffold (HuggingFace embeddings) — not current
+└── query.py           # legacy scaffold (Anthropic) — not current
 ```
+
+## Notes
+
+- `ingest.py` and `query.py` are earlier scaffolding from an initial
+  Claude + local-embeddings prototype. They are kept for reference but are not
+  the current pipeline and their dependencies are not all in
+  `requirements.txt`.
